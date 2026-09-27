@@ -76,15 +76,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const register = useCallback(async (payload: RegisterPayload) => {
-    const token = await authApi.register(payload);
-    setAccessToken(token);
-    try {
-      const me = await fetchMeWithRetry();
-      setUser(me);
-    } catch {
-      setAccessToken(null);
-      throw new Error("ثبت‌نام با موفقیت انجام شد، اما دریافت اطلاعات حساب شما با خطا مواجه شد. لطفاً وارد شوید.");
-    }
+    // نکته: این بک‌اند بعد از ثبت‌نام هیچ توکنی برنمی‌گرداند (فقط اطلاعات
+    // کاربر ساخته‌شده را می‌دهد)، پس کاربر را خودکار وارد نمی‌کنیم؛
+    // باید جداگانه از صفحه‌ی ورود، وارد شود.
+    await authApi.register(payload);
   }, []);
 
   const logout = useCallback(async () => {

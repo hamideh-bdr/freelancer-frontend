@@ -2,15 +2,16 @@ import { api, extractToken, unwrapEnvelope } from "./axiosInstance";
 import type { LoginPayload, RegisterPayload, User } from "@/types";
 
 /**
- * توجه: پاسخ واقعی /auth/login و /auth/register به این شکل است:
- * { success: true, message: "...", data: "<accessToken>" }
- * یعنی فقط توکن برمی‌گردد، نه اطلاعات کاربر. برای گرفتن اطلاعات کاربر
- * باید بعد از ورود، جداگانه getMe() صدا زده شود (این کار در AuthContext انجام می‌شود).
+ * توجه (نکته‌ی مهم که با تست واقعی مشخص شد):
+ * - پاسخ /auth/login: { success, message, data: "<accessToken>" } — فقط توکن.
+ * - پاسخ /auth/register: { success, message, data: <User> } — فقط اطلاعات کاربر ساخته‌شده،
+ *   هیچ توکنی برنمی‌گرداند! یعنی این بک‌اند بعد از ثبت‌نام کاربر را خودکار وارد نمی‌کند؛
+ *   کاربر باید جداگانه از صفحه‌ی لاگین وارد شود.
  */
 
-export async function register(payload: RegisterPayload): Promise<string> {
+export async function register(payload: RegisterPayload): Promise<User> {
   const { data } = await api.post("/auth/register", payload);
-  return extractToken(data);
+  return unwrapEnvelope<User>(data);
 }
 
 export async function login(payload: LoginPayload): Promise<string> {

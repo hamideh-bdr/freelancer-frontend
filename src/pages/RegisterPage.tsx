@@ -45,7 +45,9 @@ export default function RegisterPage() {
     setSubmitting(true);
     try {
       await register(form);
-      navigate("/", { replace: true });
+      // این بک‌اند بعد از ثبت‌نام کاربر را خودکار وارد نمی‌کند؛
+      // پس به صفحه‌ی ورود می‌فرستیم و پیام موفقیت را نشان می‌دهیم.
+      navigate("/login", { replace: true, state: { justRegistered: true } });
     } catch (err) {
       setError(extractErrorMessage(err, "ثبت‌نام ناموفق بود."));
     } finally {

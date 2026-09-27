@@ -8,7 +8,9 @@ export default function LoginPage() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = (location.state as { from?: Location })?.from?.pathname ?? "/";
+  const state = location.state as { from?: Location; justRegistered?: boolean } | null;
+  const from = state?.from?.pathname ?? "/";
+  const justRegistered = state?.justRegistered ?? false;
 
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
@@ -32,6 +34,12 @@ export default function LoginPage() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <h2 className="text-base font-semibold text-ink">ورود به حساب کاربری</h2>
+
+      {justRegistered && !error && (
+        <div className="rounded-2xl border border-brand-200/70 bg-brand-50/80 px-4 py-3 text-sm text-brand-700 backdrop-blur-sm">
+          ثبت‌نام با موفقیت انجام شد! حالا با همون نام کاربری و رمز عبور وارد شوید.
+        </div>
+      )}
 
       {error && <ErrorAlert message={error} />}
 
