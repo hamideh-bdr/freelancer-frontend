@@ -1,9 +1,8 @@
 import type { Project, Proposal } from "@/types";
 
 /**
- * چون شکل دقیق فیلد "پروژه" داخل هر proposal کاملاً در swagger.json مستند
- * نشده (ممکن است project، projectId یا یک آبجکت populate‌شده باشد)، این
- * توابع چند حالت رایج را پوشش می‌دهند تا تشخیص «کدام پروژه» همیشه کار کند.
+ * فیلد پروژه در Proposal (طبق مدل واقعی بک‌اند) همیشه "project" است، ولی
+ * بسته به اینکه populate شده باشد یا نه، ممکن است رشته‌ی id یا آبجکت کامل باشد.
  */
 
 function asRecord(value: unknown): Record<string, unknown> | null {

@@ -60,6 +60,10 @@ export default function MyProposalsPage() {
 
   const saveEdit = async () => {
     if (!editing) return;
+    if (editMessage.trim().length < 10) {
+      setError("پیام باید حداقل ۱۰ کاراکتر باشد.");
+      return;
+    }
     setBusyId(editing._id);
     try {
       await proposalsApi.updateProposal(editing._id, {

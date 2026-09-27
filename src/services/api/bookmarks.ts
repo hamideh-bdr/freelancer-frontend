@@ -1,16 +1,19 @@
+import axios from "axios";
 import { api, unwrapEnvelope } from "./axiosInstance";
 import type { Bookmark } from "@/types";
 
-function unwrapList(raw: unknown): Bookmark[] {
-  const unwrapped = unwrapEnvelope<unknown>(raw);
-  if (Array.isArray(unwrapped)) return unwrapped as Bookmark[];
-  const obj = (unwrapped ?? {}) as Record<string, unknown>;
-  return (obj.bookmarks ?? obj.items ?? obj.data ?? []) as Bookmark[];
+function isNotFound(err: unknown): boolean {
+  return axios.isAxiosError(err) && err.response?.status === 404;
 }
 
 export async function getBookmarks(): Promise<Bookmark[]> {
-  const { data } = await api.get("/bookmarks");
-  return unwrapList(data);
+  try {
+    const { data } = await api.get("/bookmarks");
+    return unwrapEnvelope<Bookmark[]>(data);
+  } catch (err) {
+    if (isNotFound(err)) return [];
+    throw err;
+  }
 }
 
 export async function getBookmarkById(bookmarkId: string): Promise<Bookmark> {

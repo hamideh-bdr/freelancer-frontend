@@ -49,7 +49,7 @@ export default function ProposalCard({
 
       <div className="flex items-start justify-between gap-3">
         <div>
-          <p className="text-sm font-medium text-ink">{freelancerName(proposal.freelancer)}</p>
+          <p className="text-sm font-medium text-ink">{freelancerName(proposal.user)}</p>
           <p className="text-xs text-muted">{formatDate(proposal.createdAt)}</p>
         </div>
         <StatusBadge status={proposal.status} />

@@ -158,7 +158,7 @@ export default function ProjectsPage() {
               />
             ))}
           </div>
-          <Pagination page={result.page} totalPages={result.totalPages} onChange={setPage} />
+          <Pagination page={result.page} hasMore={result.hasMore} onChange={setPage} />
         </>
       )}
     </div>

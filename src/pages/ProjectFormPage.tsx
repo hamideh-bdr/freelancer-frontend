@@ -70,7 +70,9 @@ export default function ProjectFormPage() {
   const validate = (): boolean => {
     const errors: Partial<Record<keyof FormState, string>> = {};
     if (!form.title.trim()) errors.title = "عنوان پروژه را وارد کنید.";
+    else if (form.title.trim().length < 5) errors.title = "عنوان باید حداقل ۵ کاراکتر باشد.";
     if (!form.description.trim()) errors.description = "توضیحات پروژه را وارد کنید.";
+    else if (form.description.trim().length < 20) errors.description = "توضیحات باید حداقل ۲۰ کاراکتر باشد.";
     if (!form.category.trim()) errors.category = "دسته‌بندی را وارد کنید.";
     if (form.budget && Number(form.budget) < 0) errors.budget = "بودجه نمی‌تواند منفی باشد.";
     if (form.deliveryDays && Number(form.deliveryDays) <= 0) errors.deliveryDays = "تعداد روز باید مثبت باشد.";
@@ -120,7 +122,7 @@ export default function ProjectFormPage() {
           <label className="label" htmlFor="title">
             عنوان پروژه
           </label>
-          <input id="title" className="input" value={form.title} onChange={update("title")} disabled={submitting} />
+          <input id="title" className="input" placeholder="حداقل ۵ کاراکتر" value={form.title} onChange={update("title")} disabled={submitting} />
           {fieldErrors.title && <p className="field-error">{fieldErrors.title}</p>}
         </div>
 
@@ -131,6 +133,7 @@ export default function ProjectFormPage() {
           <textarea
             id="description"
             className="input min-h-[120px] resize-y"
+            placeholder="حداقل ۲۰ کاراکتر"
             value={form.description}
             onChange={update("description")}
             disabled={submitting}

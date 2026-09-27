@@ -117,7 +117,11 @@ export default function ProjectDetailsPage() {
 
   const handleSubmitProposal = async (e: FormEvent) => {
     e.preventDefault();
-    if (!id || !proposalMessage.trim()) return;
+    if (!id) return;
+    if (proposalMessage.trim().length < 10) {
+      setActionError("پیام باید حداقل ۱۰ کاراکتر باشد.");
+      return;
+    }
     setSubmittingProposal(true);
     setActionError(null);
     try {
@@ -241,7 +245,7 @@ export default function ProjectDetailsPage() {
                 className="input min-h-[100px] resize-y"
                 value={proposalMessage}
                 onChange={(e) => setProposalMessage(e.target.value)}
-                placeholder="توضیح دهید چرا برای این پروژه مناسب هستید…"
+                placeholder="توضیح دهید چرا برای این پروژه مناسب هستید… (حداقل ۱۰ کاراکتر)"
                 disabled={submittingProposal}
                 required
               />

@@ -1,21 +1,31 @@
+import axios from "axios";
 import { api, unwrapEnvelope } from "./axiosInstance";
 import type { Proposal, ProposalPayload } from "@/types";
 
-function unwrapList(raw: unknown): Proposal[] {
-  const unwrapped = unwrapEnvelope<unknown>(raw);
-  if (Array.isArray(unwrapped)) return unwrapped as Proposal[];
-  const obj = (unwrapped ?? {}) as Record<string, unknown>;
-  return (obj.proposals ?? obj.items ?? obj.data ?? []) as Proposal[];
+function isNotFound(err: unknown): boolean {
+  return axios.isAxiosError(err) && err.response?.status === 404;
 }
 
+/** طبق سورس واقعی بک‌اند، وقتی پیشنهادی نباشد، به‌جای آرایه‌ی خالی، 404 برمی‌گردد. */
+
 export async function getMyProposals(): Promise<Proposal[]> {
-  const { data } = await api.get("/proposals");
-  return unwrapList(data);
+  try {
+    const { data } = await api.get("/proposals");
+    return unwrapEnvelope<Proposal[]>(data);
+  } catch (err) {
+    if (isNotFound(err)) return [];
+    throw err;
+  }
 }
 
 export async function getProjectProposals(projectId: string): Promise<Proposal[]> {
-  const { data } = await api.get(`/proposals/${projectId}`);
-  return unwrapList(data);
+  try {
+    const { data } = await api.get(`/proposals/${projectId}`);
+    return unwrapEnvelope<Proposal[]>(data);
+  } catch (err) {
+    if (isNotFound(err)) return [];
+    throw err;
+  }
 }
 
 export async function createProposal(projectId: string, payload: ProposalPayload): Promise<Proposal> {

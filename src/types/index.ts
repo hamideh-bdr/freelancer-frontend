@@ -1,11 +1,6 @@
 /**
- * تایپ‌های این فایل بر اساس swagger.json واقعی Backend استخراج شده‌اند.
- * توجه: swagger.json برای پاسخ‌های موفق (200/201) schema دقیقی مستند نکرده،
- * فقط توضیح متنی و status code را مشخص کرده است.
- * بنابراین فیلدهای احتمالی زیر بر اساس request bodyها، پارامترها،
- * و قراردادهای رایج REST/Mongoose (مثل _id، createdAt) استنتاج شده‌اند.
- * اگر پاسخ واقعی API با این تایپ‌ها اختلاف داشت، فقط کافی‌ست همین فایل
- * و نگاشت (mapping) در لایه‌ی services/api به‌روزرسانی شود؛ بقیه‌ی UI دست‌نخورده می‌ماند.
+ * تایپ‌های این فایل مستقیماً بر اساس سورس‌کد واقعی Backend (models/validators/controllers)
+ * تطبیق داده شده‌اند، نه حدس. هر جا نکته‌ای غیرمعمول در بک‌اند بود، در کامنت آمده است.
  */
 
 export interface User {
@@ -15,14 +10,10 @@ export interface User {
   username: string;
   email: string;
   phone: string;
+  role?: "ADMIN" | "USER";
   avatar?: string | null;
   createdAt?: string;
   updatedAt?: string;
-}
-
-export interface AuthResponse {
-  user: User;
-  accessToken: string;
 }
 
 export interface RegisterPayload {
@@ -68,23 +59,28 @@ export interface ProjectListQuery {
   category?: string;
   page?: number;
   limit?: number;
-  sort?: string;
+  sort?: "newest" | "oldest" | "budget-low" | "budget-high";
 }
 
+/**
+ * توجه مهم: GET /projects در بک‌اند فقط یک آرایه‌ی ساده برمی‌گرداند
+ * (بدون total/count کلی). یعنی نمی‌دانیم کلاً چند صفحه وجود دارد؛
+ * فقط می‌دانیم آیا همین صفحه پر بوده (احتمال صفحه‌ی بعد) یا نه.
+ */
 export interface PaginatedResult<T> {
   items: T[];
-  total: number;
   page: number;
   limit: number;
-  totalPages: number;
+  hasMore: boolean;
 }
 
-export type ProposalStatus = "PENDING" | "ACCEPTED" | "REJECTED" | string;
+export type ProposalStatus = "PENDING" | "ACCEPTED" | "REJECTED";
 
 export interface Proposal {
   _id: string;
   project?: Project | string;
-  freelancer?: User | string;
+  /** در بک‌اند اسم این فیلد "user" است، نه "freelancer". */
+  user?: User | string;
   message: string;
   budget?: number;
   status: ProposalStatus;
@@ -110,9 +106,4 @@ export interface DashboardStats {
   completedProjects: number;
   totalProposals: number;
   acceptedProposals: number;
-}
-
-export interface ApiErrorShape {
-  message: string;
-  errors?: Record<string, string> | { field: string; message: string }[];
 }
