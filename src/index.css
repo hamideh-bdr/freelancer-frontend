@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: "Vazirmatn", Tahoma, sans-serif;
+  }
+  body {
+    @apply text-ink;
+    background-color: #f7f5f1;
+    background-image: radial-gradient(circle at 12% 8%, rgba(79, 148, 130, 0.16), transparent 40%),
+      radial-gradient(circle at 88% 4%, rgba(214, 140, 69, 0.14), transparent 38%),
+      radial-gradient(circle at 50% 100%, rgba(47, 122, 103, 0.1), transparent 45%);
+    background-attachment: fixed;
+  }
+  ::selection {
+    @apply bg-brand-200 text-brand-800;
+  }
+  *:focus-visible {
+    @apply outline-none ring-2 ring-brand-400 ring-offset-2 ring-offset-paper;
+  }
+}
+
+@layer components {
+  .input {
+    @apply w-full rounded-2xl border border-line/80 bg-white/70 px-4 py-2.5 text-sm text-ink placeholder:text-muted/70 backdrop-blur-sm transition focus:border-brand-400 focus:bg-white disabled:cursor-not-allowed disabled:bg-line/40;
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-medium text-ink;
+  }
+  .field-error {
+    @apply mt-1 text-xs text-red-600;
+  }
+
+  /* دکمه‌های شیشه‌ای (glassmorphism): نیمه‌شفاف + بلور پشت‌زمینه + لبه‌ی نازک روشن */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-full px-5 py-2.5 text-sm font-medium backdrop-blur-md transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60;
+  }
+  .btn-primary {
+    @apply btn border border-white/25 bg-brand-600/85 text-white shadow-lg shadow-brand-900/15 hover:bg-brand-600/95 hover:shadow-brand-900/25 active:scale-[0.98];
+  }
+  .btn-accent {
+    @apply btn border border-white/30 bg-accent-400/85 text-white shadow-lg shadow-accent-600/20 hover:bg-accent-400/95 active:scale-[0.98];
+  }
+  .btn-outline {
+    @apply btn border border-white/60 bg-white/40 text-ink shadow-sm hover:bg-white/60 active:scale-[0.98];
+  }
+  .btn-danger {
+    @apply btn border border-white/25 bg-red-600/85 text-white shadow-lg shadow-red-900/15 hover:bg-red-600/95 active:scale-[0.98];
+  }
+
+  /* کارت‌ها: گردتر و با کمی حس شیشه‌ای، ولی همچنان خوانا */
+  .card {
+    @apply rounded-3xl border border-white/60 bg-white/80 p-5 shadow-soft backdrop-blur-sm;
+  }
+}
+
