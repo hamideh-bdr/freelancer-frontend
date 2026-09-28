@@ -47,7 +47,6 @@ export default function ProjectsPage() {
 
   useEffect(() => {
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, status]);
 
   useEffect(() => {
@@ -60,7 +59,6 @@ export default function ProjectsPage() {
         setBookmarkedIds(ids);
       })
       .catch(() => {
-        /* اگر نشان‌شده‌ها در دسترس نبود، بی‌صدا رد می‌شویم؛ صفحه بدون آن هم کار می‌کند */
       });
   }, []);
 
@@ -87,7 +85,6 @@ export default function ProjectsPage() {
         return next;
       });
     } catch {
-      /* خطای نشان‌کردن به‌صورت toast ساده نادیده گرفته می‌شود تا UI متوقف نشود */
     }
   };
 

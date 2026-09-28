@@ -20,12 +20,7 @@ function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-/**
- * ورود/ثبت‌نام موفق است، ولی گرفتن اطلاعات کاربر (/auth/me) بلافاصله بعدش
- * ممکن است یک‌بار به‌خاطر کندی لحظه‌ای سرور fail شود؛ یک بار دیگر امتحان می‌کنیم
- * قبل از اینکه واقعاً شکست را به کاربر اعلام کنیم — تا «ورود موفق» به‌اشتباه
- * «ورود ناموفق» نشان داده نشود.
- */
+
 async function fetchMeWithRetry(): Promise<User> {
   try {
     return await authApi.getMe();
@@ -64,7 +59,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = useCallback(async (payload: LoginPayload) => {
     const token = await authApi.login(payload);
-    // از اینجا به بعد، اعتبار کاربر تأیید شده؛ خطای احتمالی دیگر «رمز/نام کاربری اشتباه» نیست.
     setAccessToken(token);
     try {
       const me = await fetchMeWithRetry();
@@ -76,9 +70,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const register = useCallback(async (payload: RegisterPayload) => {
-    // نکته: این بک‌اند بعد از ثبت‌نام هیچ توکنی برنمی‌گرداند (فقط اطلاعات
-    // کاربر ساخته‌شده را می‌دهد)، پس کاربر را خودکار وارد نمی‌کنیم؛
-    // باید جداگانه از صفحه‌ی ورود، وارد شود.
     await authApi.register(payload);
   }, []);
 

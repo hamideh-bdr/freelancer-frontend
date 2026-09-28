@@ -28,8 +28,8 @@ export default function RegisterPage() {
 
   const validate = (): boolean => {
     const errors: Partial<Record<keyof FormState, string>> = {};
-    if (!form.name.trim()) errors.name = "نام را وارد کنید.";
-    if (!form.username.trim()) errors.username = "نام کاربری را وارد کنید.";
+    if (form.name.trim().length < 3) errors.name = "نام باید حداقل ۳ کاراکتر باشد.";
+    if (form.username.trim().length < 4) errors.username = "نام کاربری باید حداقل ۴ کاراکتر باشد.";
     if (!/^\S+@\S+\.\S+$/.test(form.email)) errors.email = "ایمیل معتبر نیست.";
     if (!/^0?9\d{9}$/.test(form.phone.replace(/\s/g, ""))) errors.phone = "شماره موبایل معتبر نیست.";
     if (form.password.length < 8) errors.password = "رمز عبور باید حداقل ۸ کاراکتر باشد.";
@@ -45,8 +45,6 @@ export default function RegisterPage() {
     setSubmitting(true);
     try {
       await register(form);
-      // این بک‌اند بعد از ثبت‌نام کاربر را خودکار وارد نمی‌کند؛
-      // پس به صفحه‌ی ورود می‌فرستیم و پیام موفقیت را نشان می‌دهیم.
       navigate("/login", { replace: true, state: { justRegistered: true } });
     } catch (err) {
       setError(extractErrorMessage(err, "ثبت‌نام ناموفق بود."));

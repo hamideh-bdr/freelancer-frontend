@@ -6,7 +6,6 @@ function isNotFound(err: unknown): boolean {
   return axios.isAxiosError(err) && err.response?.status === 404;
 }
 
-/** طبق سورس واقعی بک‌اند، وقتی پیشنهادی نباشد، به‌جای آرایه‌ی خالی، 404 برمی‌گردد. */
 
 export async function getMyProposals(): Promise<Proposal[]> {
   try {

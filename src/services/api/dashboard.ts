@@ -11,7 +11,6 @@ const EMPTY_STATS: DashboardStats = {
   acceptedProposals: 0,
 };
 
-/** طبق سورس واقعی بک‌اند، اگر کاربر هیچ پروژه‌ای نداشته باشد، 404 برمی‌گردد (نه صفر). */
 export async function getDashboardStats(): Promise<DashboardStats> {
   try {
     const { data } = await api.get("/dashboards");

@@ -6,15 +6,6 @@ function isNotFound(err: unknown): boolean {
   return axios.isAxiosError(err) && err.response?.status === 404;
 }
 
-/**
- * نکته‌ی مهم تأییدشده از سورس واقعی بک‌اند (controllers/v1/project.js):
- * - GET /projects فقط یک آرایه‌ی ساده در data برمی‌گرداند (بدون total/count کلی).
- *   یعنی نمی‌توان تعداد کل صفحات را فهمید؛ فقط می‌شود حدس زد آیا صفحه‌ی بعد
- *   هست یا نه (اگر همین صفحه دقیقاً به‌اندازه‌ی limit پر بوده باشد).
- * - وقتی هیچ نتیجه‌ای نباشد، بک‌اند به‌جای آرایه‌ی خالی، status 404 برمی‌گرداند
- *   (هم برای GET /projects و هم GET /projects/my). این یعنی "خالی بودن"، نه خطا؛
- *   پس این حالت را جداگانه می‌گیریم و به‌عنوان لیست خالی برمی‌گردانیم.
- */
 export async function listProjects(query: ProjectListQuery = {}): Promise<PaginatedResult<Project>> {
   const limit = query.limit ?? 5;
   const page = query.page ?? 1;

@@ -1,8 +1,3 @@
-/**
- * تایپ‌های این فایل مستقیماً بر اساس سورس‌کد واقعی Backend (models/validators/controllers)
- * تطبیق داده شده‌اند، نه حدس. هر جا نکته‌ای غیرمعمول در بک‌اند بود، در کامنت آمده است.
- */
-
 export interface User {
   _id: string;
   id?: string;
@@ -62,11 +57,6 @@ export interface ProjectListQuery {
   sort?: "newest" | "oldest" | "budget-low" | "budget-high";
 }
 
-/**
- * توجه مهم: GET /projects در بک‌اند فقط یک آرایه‌ی ساده برمی‌گرداند
- * (بدون total/count کلی). یعنی نمی‌دانیم کلاً چند صفحه وجود دارد؛
- * فقط می‌دانیم آیا همین صفحه پر بوده (احتمال صفحه‌ی بعد) یا نه.
- */
 export interface PaginatedResult<T> {
   items: T[];
   page: number;
@@ -79,7 +69,6 @@ export type ProposalStatus = "PENDING" | "ACCEPTED" | "REJECTED";
 export interface Proposal {
   _id: string;
   project?: Project | string;
-  /** در بک‌اند اسم این فیلد "user" است، نه "freelancer". */
   user?: User | string;
   message: string;
   budget?: number;

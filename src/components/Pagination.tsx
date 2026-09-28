@@ -4,11 +4,7 @@ interface Props {
   onChange: (page: number) => void;
 }
 
-/**
- * چون GET /projects در بک‌اند فقط آرایه برمی‌گرداند (بدون تعداد کل)،
- * نمی‌توانیم شماره‌ی صفحات را نشان بدهیم؛ فقط "قبلی/بعدی" منطقی است.
- * "بعدی" وقتی فعال است که صفحه‌ی فعلی دقیقاً به‌اندازه‌ی limit پر شده باشد.
- */
+
 export default function Pagination({ page, hasMore, onChange }: Props) {
   if (page <= 1 && !hasMore) return null;
 

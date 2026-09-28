@@ -20,3 +20,11 @@ export function initialsOf(name?: string): string {
   if (!name) return "?";
   return name.trim().slice(0, 2);
 }
+
+
+export function uploadUrl(filename?: string | null): string | undefined {
+  if (!filename) return undefined;
+  if (/^https?:\/\//i.test(filename)) return filename;
+  const base = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
+  return `${base}/uploads/${encodeURIComponent(filename)}`;
+}

@@ -50,8 +50,6 @@ export default function ProjectDetailsPage() {
         const list = await proposalsApi.getProjectProposals(id);
         setProposals(list);
       } else {
-        // چک می‌کنیم آیا کاربر قبلاً برای همین پروژه پیشنهاد داده یا نه،
-        // تا از ارسال پیشنهاد تکراری (که بک‌اند رد می‌کند) جلوگیری کنیم.
         try {
           const mine = await proposalsApi.getMyProposals();
           const existing = mine.find((p) => {
@@ -72,7 +70,6 @@ export default function ProjectDetailsPage() {
 
   useEffect(() => {
     load();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   const handleDelete = async () => {

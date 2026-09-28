@@ -24,8 +24,6 @@ export default function MyProposalsPage() {
     try {
       const data = await proposalsApi.getMyProposals();
 
-      // اگر پاسخ بک‌اند فقط آی‌دی پروژه را می‌دهد (نه عنوانش)، جداگانه
-      // اطلاعات هر پروژه را می‌گیریم تا عنوانش قابل‌نمایش باشد.
       const enriched = await Promise.all(
         data.map(async (p) => {
           if (extractProjectTitle(p)) return p;

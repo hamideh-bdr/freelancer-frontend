@@ -10,9 +10,7 @@ interface Props {
   onEdit?: () => void;
   onDelete?: () => void;
   busy?: boolean;
-  /** عنوان پروژه‌ای که این پیشنهاد برای آن ارسال شده (اگر پیدا شود). */
   projectTitle?: string;
-  /** آی‌دی پروژه، برای ساخت لینک به صفحه‌ی جزئیات پروژه. */
   projectId?: string;
 }
 

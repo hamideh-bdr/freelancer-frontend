@@ -1,6 +1,6 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { initialsOf } from "@/utils/formatters";
+import { initialsOf, uploadUrl } from "@/utils/formatters";
 import { useState } from "react";
 
 const NAV_LINKS = [
@@ -54,7 +54,7 @@ export default function Navbar() {
           <NavLink to="/profile" className="flex items-center gap-2">
             {user?.avatar ? (
               <img
-                src={user.avatar}
+                src={uploadUrl(user.avatar)}
                 alt={user.name}
                 className="h-9 w-9 rounded-full object-cover ring-2 ring-white/70"
               />

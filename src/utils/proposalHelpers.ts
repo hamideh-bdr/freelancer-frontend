@@ -1,10 +1,5 @@
 import type { Project, Proposal } from "@/types";
 
-/**
- * فیلد پروژه در Proposal (طبق مدل واقعی بک‌اند) همیشه "project" است، ولی
- * بسته به اینکه populate شده باشد یا نه، ممکن است رشته‌ی id یا آبجکت کامل باشد.
- */
-
 function asRecord(value: unknown): Record<string, unknown> | null {
   return value && typeof value === "object" ? (value as Record<string, unknown>) : null;
 }

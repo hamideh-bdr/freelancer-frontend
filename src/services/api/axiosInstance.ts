@@ -3,19 +3,11 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 if (!BASE_URL) {
-  // eslint-disable-next-line no-console
   console.warn(
     "VITE_API_BASE_URL تنظیم نشده است. لطفاً فایل .env را بر اساس .env.example بسازید."
   );
 }
 
-/**
- * Access token در حافظه (memory) نگه‌داری می‌شود، نه localStorage،
- * تا در برابر XSS ایمن‌تر باشد. Refresh token بر اساس قرارداد Backend
- * (که در swagger.json برای /auth/refresh-token و /auth/logout هیچ
- * request body‌ای تعریف نکرده) احتمالاً به‌صورت httpOnly cookie مدیریت می‌شود؛
- * به همین دلیل withCredentials فعال است.
- */
 let accessToken: string | null = null;
 
 export function setAccessToken(token: string | null) {
@@ -57,7 +49,6 @@ function processQueue(error: unknown, token: string | null) {
   pendingQueue = [];
 }
 
-/** توسط AuthContext تنظیم می‌شود تا در صورت شکست refresh، کاربر logout شود. */
 let onAuthFailure: (() => void) | null = null;
 export function setOnAuthFailure(handler: () => void) {
   onAuthFailure = handler;
@@ -116,13 +107,7 @@ api.interceptors.response.use(
   }
 );
 
-/**
- * بک‌اند واقعی پاسخ‌ها رو داخل یک پوشش یکسان برمی‌گردونه:
- * { success: boolean, message: string, data: T }
- * این تابع اون رو باز می‌کنه و فقط data واقعی رو برمی‌گردونه.
- * اگر پاسخ این شکل رو نداشت (envelope نبود)، خود پاسخ را بدون تغییر برمی‌گرداند
- * تا برای endpointهایی که شکل دیگری دارند هم کار کند.
- */
+
 export function unwrapEnvelope<T>(raw: unknown): T {
   if (raw && typeof raw === "object" && "success" in raw && "data" in raw) {
     return (raw as { data: T }).data;
@@ -130,7 +115,6 @@ export function unwrapEnvelope<T>(raw: unknown): T {
   return raw as T;
 }
 
-/** توکن را از پاسخ‌های auth (که data می‌تواند مستقیماً رشته‌ی JWT باشد) استخراج می‌کند. */
 export function extractToken(raw: unknown): string {
   const unwrapped = unwrapEnvelope<unknown>(raw);
   if (typeof unwrapped === "string") return unwrapped;
@@ -145,13 +129,11 @@ export function extractErrorMessage(error: unknown, fallback = "خطایی رخ 
     const status = error.response?.status;
     const data = error.response?.data as { message?: string; data?: unknown } | undefined;
 
-    // تکراری بودن نام کاربری/ایمیل/موبایل (بک‌اند پیام انگلیسی می‌دهد، اینجا فارسی نشان می‌دهیم)
     if (status === 409) return "این نام کاربری، ایمیل یا شماره موبایل قبلاً ثبت شده است.";
     if (status === 401) return "لطفاً دوباره وارد شوید.";
     if (status === 404) return "موردی یافت نشد.";
     if (status === 429) return "درخواست‌های شما بیش از حد مجاز بوده؛ چند دقیقه صبر کنید و دوباره امتحان کنید.";
 
-    // خطاهای ولیدیشن (۴۲۲) معمولاً به‌شکل آرایه‌ای از پیام‌های هر فیلد در data.data می‌آیند
     if (status === 422 && Array.isArray(data?.data)) {
       const fieldMessages = (data!.data as Array<{ message?: string }>)
         .map((item) => item?.message)

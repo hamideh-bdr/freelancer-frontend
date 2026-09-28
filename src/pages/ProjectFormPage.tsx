@@ -15,11 +15,7 @@ interface FormState {
 
 const INITIAL: FormState = { title: "", description: "", category: "", budget: "", deliveryDays: "" };
 
-/**
- * این فقط یک لیست پیشنهادی برای راحتی تایپ است (HTML <datalist>)، نه یک enum واقعی
- * از بک‌اند — چون هیچ endpoint یا enumی برای دسته‌بندی‌ها در swagger.json مستند نشده.
- * فیلد همچنان متن آزاد است و هر مقداری قابل ورود است.
- */
+
 const CATEGORY_SUGGESTIONS = [
   "Web Development",
   "Backend Development",
