@@ -39,12 +39,10 @@ function AppRoutes() {
       </Route>
 
       <Route element={<MainLayout />}>
-        {/* عمومی: هرکسی (مهمان یا واردشده) می‌تواند پروژه‌ها را ببیند */}
         <Route path="/" element={<HomeRoute />} />
         <Route path="/projects" element={<ProjectsPage />} />
         <Route path="/projects/:id" element={<ProjectDetailsPage />} />
 
-        {/* نیازمند ورود: فقط اقدامات واقعی (ثبت، ویرایش، پیگیری شخصی) */}
         <Route path="/projects/new" element={<ProtectedRoute><ProjectFormPage /></ProtectedRoute>} />
         <Route path="/projects/:id/edit" element={<ProtectedRoute><ProjectFormPage /></ProtectedRoute>} />
         <Route path="/my-projects" element={<ProtectedRoute><MyProjectsPage /></ProtectedRoute>} />
