@@ -24,6 +24,12 @@ function GuestOnlyRoute({ children }: { children: ReactNode }) {
   return <>{children}</>;
 }
 
+function HomeRoute() {
+  const { isAuthenticated, isInitializing } = useAuth();
+  if (isInitializing) return <LoadingSpinner fullPage />;
+  return isAuthenticated ? <DashboardPage /> : <Navigate to="/projects" replace />;
+}
+
 function AppRoutes() {
   return (
     <Routes>
@@ -32,22 +38,19 @@ function AppRoutes() {
         <Route path="/register" element={<RegisterPage />} />
       </Route>
 
-      <Route
-        element={
-          <ProtectedRoute>
-            <MainLayout />
-          </ProtectedRoute>
-        }
-      >
-        <Route path="/" element={<DashboardPage />} />
+      <Route element={<MainLayout />}>
+        {/* عمومی: هرکسی (مهمان یا واردشده) می‌تواند پروژه‌ها را ببیند */}
+        <Route path="/" element={<HomeRoute />} />
         <Route path="/projects" element={<ProjectsPage />} />
-        <Route path="/projects/new" element={<ProjectFormPage />} />
         <Route path="/projects/:id" element={<ProjectDetailsPage />} />
-        <Route path="/projects/:id/edit" element={<ProjectFormPage />} />
-        <Route path="/my-projects" element={<MyProjectsPage />} />
-        <Route path="/proposals" element={<MyProposalsPage />} />
-        <Route path="/bookmarks" element={<BookmarksPage />} />
-        <Route path="/profile" element={<ProfilePage />} />
+
+        {/* نیازمند ورود: فقط اقدامات واقعی (ثبت، ویرایش، پیگیری شخصی) */}
+        <Route path="/projects/new" element={<ProtectedRoute><ProjectFormPage /></ProtectedRoute>} />
+        <Route path="/projects/:id/edit" element={<ProtectedRoute><ProjectFormPage /></ProtectedRoute>} />
+        <Route path="/my-projects" element={<ProtectedRoute><MyProjectsPage /></ProtectedRoute>} />
+        <Route path="/proposals" element={<ProtectedRoute><MyProposalsPage /></ProtectedRoute>} />
+        <Route path="/bookmarks" element={<ProtectedRoute><BookmarksPage /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
       </Route>
 
       <Route path="*" element={<NotFoundPage />} />

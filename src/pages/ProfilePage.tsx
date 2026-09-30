@@ -5,8 +5,7 @@ import { extractErrorMessage } from "@/services/api/axiosInstance";
 import ErrorAlert from "@/components/ErrorAlert";
 import { initialsOf, uploadUrl } from "@/utils/formatters";
 
-const MAX_AVATAR_BYTES = 2 * 1024 * 1024; 
-
+const MAX_AVATAR_BYTES = 2 * 1024 * 1024;
 interface FormState {
   name: string;
   username: string;

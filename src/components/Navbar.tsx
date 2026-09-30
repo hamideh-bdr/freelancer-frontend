@@ -3,7 +3,9 @@ import { useAuth } from "@/contexts/AuthContext";
 import { initialsOf, uploadUrl } from "@/utils/formatters";
 import { useState } from "react";
 
-const NAV_LINKS = [
+const GUEST_NAV_LINKS = [{ to: "/projects", label: "پروژه‌ها" }];
+
+const AUTH_NAV_LINKS = [
   { to: "/", label: "داشبورد" },
   { to: "/projects", label: "پروژه‌ها" },
   { to: "/my-projects", label: "پروژه‌های من" },
@@ -12,9 +14,11 @@ const NAV_LINKS = [
 ];
 
 export default function Navbar() {
-  const { user, logout } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const navLinks = isAuthenticated ? AUTH_NAV_LINKS : GUEST_NAV_LINKS;
 
   const handleLogout = async () => {
     await logout();
@@ -38,7 +42,7 @@ export default function Navbar() {
           </NavLink>
 
           <nav className="hidden items-center gap-1 md:flex">
-            {NAV_LINKS.map((link) => (
+            {navLinks.map((link) => (
               <NavLink key={link.to} to={link.to} end={link.to === "/"} className={linkClass}>
                 {link.label}
               </NavLink>
@@ -47,27 +51,40 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-3">
-          <NavLink to="/projects/new" className="btn-accent hidden px-4 py-2 text-xs sm:inline-flex">
-            ثبت پروژه جدید
-          </NavLink>
+          {isAuthenticated ? (
+            <>
+              <NavLink to="/projects/new" className="btn-accent hidden px-4 py-2 text-xs sm:inline-flex">
+                ثبت پروژه جدید
+              </NavLink>
 
-          <NavLink to="/profile" className="flex items-center gap-2">
-            {user?.avatar ? (
-              <img
-                src={uploadUrl(user.avatar)}
-                alt={user.name}
-                className="h-9 w-9 rounded-full object-cover ring-2 ring-white/70"
-              />
-            ) : (
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-100 text-sm font-semibold text-brand-700 ring-2 ring-white/70">
-                {initialsOf(user?.name)}
-              </span>
-            )}
-          </NavLink>
+              <NavLink to="/profile" className="flex items-center gap-2">
+                {user?.avatar ? (
+                  <img
+                    src={uploadUrl(user.avatar)}
+                    alt={user.name}
+                    className="h-9 w-9 rounded-full object-cover ring-2 ring-white/70"
+                  />
+                ) : (
+                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-brand-100 text-sm font-semibold text-brand-700 ring-2 ring-white/70">
+                    {initialsOf(user?.name)}
+                  </span>
+                )}
+              </NavLink>
 
-          <button onClick={handleLogout} className="hidden text-sm font-medium text-muted hover:text-red-600 md:inline">
-            خروج
-          </button>
+              <button onClick={handleLogout} className="hidden text-sm font-medium text-muted hover:text-red-600 md:inline">
+                خروج
+              </button>
+            </>
+          ) : (
+            <div className="hidden items-center gap-2 sm:flex">
+              <NavLink to="/login" className="btn-outline px-4 py-2 text-xs">
+                ورود
+              </NavLink>
+              <NavLink to="/register" className="btn-accent px-4 py-2 text-xs">
+                ثبت‌نام
+              </NavLink>
+            </div>
+          )}
 
           <button
             className="rounded-full bg-white/50 p-2 text-ink backdrop-blur-sm md:hidden"
@@ -83,7 +100,7 @@ export default function Navbar() {
 
       {menuOpen && (
         <nav className="flex flex-col gap-1 border-t border-white/40 bg-white/70 px-4 py-3 backdrop-blur-lg md:hidden">
-          {NAV_LINKS.map((link) => (
+          {navLinks.map((link) => (
             <NavLink
               key={link.to}
               to={link.to}
@@ -94,12 +111,26 @@ export default function Navbar() {
               {link.label}
             </NavLink>
           ))}
-          <NavLink to="/projects/new" className={linkClass} onClick={() => setMenuOpen(false)}>
-            ثبت پروژه جدید
-          </NavLink>
-          <button onClick={handleLogout} className="rounded-full px-3.5 py-2 text-right text-sm font-medium text-red-600">
-            خروج
-          </button>
+
+          {isAuthenticated ? (
+            <>
+              <NavLink to="/projects/new" className={linkClass} onClick={() => setMenuOpen(false)}>
+                ثبت پروژه جدید
+              </NavLink>
+              <button onClick={handleLogout} className="rounded-full px-3.5 py-2 text-right text-sm font-medium text-red-600">
+                خروج
+              </button>
+            </>
+          ) : (
+            <>
+              <NavLink to="/login" className={linkClass} onClick={() => setMenuOpen(false)}>
+                ورود
+              </NavLink>
+              <NavLink to="/register" className={linkClass} onClick={() => setMenuOpen(false)}>
+                ثبت‌نام
+              </NavLink>
+            </>
+          )}
         </nav>
       )}
     </header>

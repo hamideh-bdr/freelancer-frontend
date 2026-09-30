@@ -21,7 +21,6 @@ export function initialsOf(name?: string): string {
   return name.trim().slice(0, 2);
 }
 
-
 export function uploadUrl(filename?: string | null): string | undefined {
   if (!filename) return undefined;
   if (/^https?:\/\//i.test(filename)) return filename;

@@ -4,7 +4,6 @@ interface Props {
   onChange: (page: number) => void;
 }
 
-
 export default function Pagination({ page, hasMore, onChange }: Props) {
   if (page <= 1 && !hasMore) return null;
 

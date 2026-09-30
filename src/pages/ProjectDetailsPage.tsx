@@ -1,5 +1,5 @@
 import { FormEvent, useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import type { Project, Proposal } from "@/types";
 import * as projectsApi from "@/services/api/projects";
@@ -21,8 +21,9 @@ function ownerId(owner?: Project["owner"]): string | undefined {
 
 export default function ProjectDetailsPage() {
   const { id } = useParams<{ id: string }>();
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [project, setProject] = useState<Project | null>(null);
   const [proposals, setProposals] = useState<Proposal[]>([]);
@@ -49,7 +50,7 @@ export default function ProjectDetailsPage() {
       if (ownerId(projectData.owner) === user?._id) {
         const list = await proposalsApi.getProjectProposals(id);
         setProposals(list);
-      } else {
+      } else if (isAuthenticated) {
         try {
           const mine = await proposalsApi.getMyProposals();
           const existing = mine.find((p) => {
@@ -172,10 +173,14 @@ export default function ProjectDetailsPage() {
                 حذف پروژه
               </button>
             </>
-          ) : (
+          ) : isAuthenticated ? (
             <button className="btn-outline" onClick={handleBookmark} disabled={busy}>
               نشان‌کردن پروژه
             </button>
+          ) : (
+            <Link to="/login" state={{ from: location }} className="btn-outline">
+              برای نشان‌کردن، وارد شوید
+            </Link>
           )}
         </div>
       </div>
@@ -192,6 +197,20 @@ export default function ProjectDetailsPage() {
               ))}
             </div>
           )}
+        </div>
+      ) : !isAuthenticated ? (
+        <div className="card flex flex-col items-start gap-3">
+          <p className="text-sm text-ink/80">
+            برای ارسال پیشنهاد به این پروژه، ابتدا باید وارد حساب کاربری‌تان شوید.
+          </p>
+          <div className="flex gap-2">
+            <Link to="/login" state={{ from: location }} className="btn-primary text-sm">
+              ورود
+            </Link>
+            <Link to="/register" className="btn-outline text-sm">
+              ثبت‌نام
+            </Link>
+          </div>
         </div>
       ) : myProposal ? (
         <div className="card flex flex-col gap-3">

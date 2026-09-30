@@ -1,7 +1,9 @@
 import { useEffect, useState, type FormEvent } from "react";
+import { useLocation, Link } from "react-router-dom";
 import type { PaginatedResult, Project, ProjectListQuery, ProjectStatus } from "@/types";
 import * as projectsApi from "@/services/api/projects";
 import * as bookmarksApi from "@/services/api/bookmarks";
+import { useAuth } from "@/contexts/AuthContext";
 import { extractErrorMessage } from "@/services/api/axiosInstance";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ErrorAlert from "@/components/ErrorAlert";
@@ -17,6 +19,8 @@ const STATUS_OPTIONS: { value: ProjectStatus | ""; label: string }[] = [
 ];
 
 export default function ProjectsPage() {
+  const { isAuthenticated } = useAuth();
+  const location = useLocation();
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState<ProjectStatus | "">("");
   const [category, setCategory] = useState("");
@@ -50,6 +54,10 @@ export default function ProjectsPage() {
   }, [page, status]);
 
   useEffect(() => {
+    if (!isAuthenticated) {
+      setBookmarkedIds(new Set());
+      return;
+    }
     bookmarksApi
       .getBookmarks()
       .then((list) => {
@@ -60,7 +68,7 @@ export default function ProjectsPage() {
       })
       .catch(() => {
       });
-  }, []);
+  }, [isAuthenticated]);
 
   const handleSearchSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -94,6 +102,20 @@ export default function ProjectsPage() {
         <h1 className="text-xl font-bold text-ink">پروژه‌ها</h1>
         <p className="mt-1 text-sm text-muted">پروژه‌های باز را جست‌وجو کنید و برای آن‌ها پیشنهاد ارسال کنید</p>
       </div>
+
+      {!isAuthenticated && (
+        <div className="card flex flex-wrap items-center justify-between gap-3 border-accent-200/70 bg-accent-50/40">
+          <p className="text-sm text-ink/80">می‌توانید همین‌جا پروژه‌ها را ببینید؛ برای ارسال پیشنهاد یا ثبت پروژه، وارد شوید.</p>
+          <div className="flex gap-2">
+            <Link to="/login" state={{ from: location }} className="btn-primary text-xs">
+              ورود
+            </Link>
+            <Link to="/register" className="btn-outline text-xs">
+              ثبت‌نام
+            </Link>
+          </div>
+        </div>
+      )}
 
       <form onSubmit={handleSearchSubmit} className="card flex flex-col gap-3 sm:flex-row sm:items-end">
         <div className="flex-1">
@@ -151,7 +173,7 @@ export default function ProjectsPage() {
                 key={project._id}
                 project={project}
                 bookmarked={bookmarkedIds.has(project._id)}
-                onToggleBookmark={() => toggleBookmark(project._id)}
+                onToggleBookmark={isAuthenticated ? () => toggleBookmark(project._id) : undefined}
               />
             ))}
           </div>

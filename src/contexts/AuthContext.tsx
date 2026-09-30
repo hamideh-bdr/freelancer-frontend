@@ -20,7 +20,6 @@ function wait(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-
 async function fetchMeWithRetry(): Promise<User> {
   try {
     return await authApi.getMe();

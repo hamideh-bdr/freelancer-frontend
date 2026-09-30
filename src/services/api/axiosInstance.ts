@@ -8,6 +8,7 @@ if (!BASE_URL) {
   );
 }
 
+
 let accessToken: string | null = null;
 
 export function setAccessToken(token: string | null) {

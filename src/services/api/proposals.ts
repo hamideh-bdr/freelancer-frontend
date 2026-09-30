@@ -6,7 +6,6 @@ function isNotFound(err: unknown): boolean {
   return axios.isAxiosError(err) && err.response?.status === 404;
 }
 
-
 export async function getMyProposals(): Promise<Proposal[]> {
   try {
     const { data } = await api.get("/proposals");
